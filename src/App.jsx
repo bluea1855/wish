@@ -4,7 +4,7 @@ import './index.css';
 import Home from "./pages/Home";
 // import Gift from "./pages/Gift";
 import FeatureContent from "./pages/FeatureContent";
-import Gift from "./Pages/Gift";
+import Gift from "./pages/Gift";
 import DynamicRedirect from './pages/[id]';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
