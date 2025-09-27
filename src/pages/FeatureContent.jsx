@@ -99,9 +99,9 @@ Tone: warm, kind, joyful, and poetic. Include themes of love, health, happiness,
           <h1 className="text-3xl font-bold text-center animate-pulse">Loading...</h1>
         ) : (
           <>
-            <h1 className="text-5xl font-happy md:text-5xl font-bold mb-6 text-center">{data.title}</h1>
+            <h1 className="text-4xl font-happy md:text-5xl font-bold mb-6 text-center mb-3">{data.title}</h1>
 
-            <div className="space-y-20 text-white/90 font-happy text-xl text-center leading-relaxed">
+            <div className="space-y-20 text-white/90 font-happy text-lg text-center leading-relaxed">
               {data.poem.reduce((groups, line, index) => {
                 const groupIndex = Math.floor(index / 4);
                 if (!groups[groupIndex]) groups[groupIndex] = [];
@@ -141,5 +141,6 @@ Tone: warm, kind, joyful, and poetic. Include themes of love, health, happiness,
     </div>
   );
 };
+
 
 export default FeatureContent;
