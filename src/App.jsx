@@ -11,14 +11,16 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 function App() {
   return (
+    <>
     <Routes>
       <Route path="/" element={<Gift />} />
       <Route path="/wish" element={<Home />} />
       <Route path="/gift" element={<FeatureContent />} />
       <Route path="/:id" element={<DynamicRedirect />} />
-      <Analytics/>
-      <SpeedInsights/>
     </Routes>
+    <Analytics/>
+    <SpeedInsights/>
+    </>
   );
 }
 
