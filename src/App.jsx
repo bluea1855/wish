@@ -6,8 +6,8 @@ import Home from "./pages/Home";
 import FeatureContent from "./pages/FeatureContent";
 import Gift from "./pages/Gift";
 import DynamicRedirect from './pages/[id]';
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics";
+import { SpeedInsights } from "@vercel/speed-insights";
 
 function App() {
   return (
