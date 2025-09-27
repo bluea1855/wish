@@ -4,8 +4,9 @@ import './index.css';
 import Home from "./pages/Home";
 // import Gift from "./pages/Gift";
 import FeatureContent from "./pages/FeatureContent";
-import Gift from "./pages/Gift";
+import Gift from "./Pages/Gift";
 import DynamicRedirect from './pages/[id]';
+import { Analytics } from "@vercel/analytics/next"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/wish" element={<Home />} />
       <Route path="/gift" element={<FeatureContent />} />
       <Route path="/:id" element={<DynamicRedirect />} />
+      <Analytics/>
     </Routes>
   );
 }
