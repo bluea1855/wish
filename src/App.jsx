@@ -6,7 +6,8 @@ import Home from "./pages/Home";
 import FeatureContent from "./pages/FeatureContent";
 import Gift from "./Pages/Gift";
 import DynamicRedirect from './pages/[id]';
-import { Analytics } from "@vercel/analytics/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
       <Route path="/gift" element={<FeatureContent />} />
       <Route path="/:id" element={<DynamicRedirect />} />
       <Analytics/>
+      <SpeedInsights/>
     </Routes>
   );
 }
