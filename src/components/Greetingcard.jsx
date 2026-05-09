@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const GreetingCard = ({ name, age }) => {
+const GreetingCard = ({ name, age, isLocked, lockedData, onLock, charset }) => {
   const [step, setStep] = useState(0);
   const navigate = useNavigate();
 
   const steps = [
-    "Capturing device details...",
-    "Accessing camera...",
-    "Capturing IP...",
-    "Accessing Microphone...",
-    "Captured MAC...",
-    "Accessing location...",
-    "Accessing Media...",
-    "Accessing Files...",
-    "Geo-fenced location..",
-    "Traced..",
-    "Loading...",
-    "successfull!!",
+    "Initializing temporal link...",
+    "Synchronizing memory shards...",
+    "Reconstructing timeline...",
+    "Calibrating emotional resonance...",
+    "Opening time capsule...",
+    "Success. Memory Restored.",
   ];
 
   useEffect(() => {
     if (step < steps.length) {
-      const timer = setTimeout(() => setStep(step + 1), 620);
+      const timer = setTimeout(() => setStep(step + 1), 800);
       return () => clearTimeout(timer);
     }
   }, [step]);
@@ -30,28 +24,48 @@ const GreetingCard = ({ name, age }) => {
   return (
     <div className="flex items-center justify-center min-h-screen w-full px-4 relative">
       <div
-        className="group bg-white/10 border border-white/30 backdrop-blur-md text-white p-8 sm:p-10 rounded-3xl shadow-xl max-w-md w-full text-center transform transition duration-500 hover:rotate-[1deg] hover:scale-[1.01] hover:shadow-2xl"
+        className="group bg-black/40 border border-white/20 backdrop-blur-xl text-white p-8 sm:p-12 rounded-[2rem] shadow-2xl max-w-lg w-full text-center transform transition duration-700 hover:scale-[1.02] border-t-white/40 border-l-white/40"
       >
-        {step < steps.length && !age && !name ? (
-          <p className="text-xl sm:text-2xl text-green-500 font-mono animate-pulse">
-            {steps[step]}
-          </p>
-        ) : (
-          <div>
-            <h1
-              className="text-5xl bg-gradient-to-r from-pink-500 via-yellow-400 to-green-500 bg-clip-text text-transparent font-extrabold sm:text-5xl font-happy mb-4 drop-shadow-lg"
-            >
-              Happy {age}th Birthday {name}!!
-            </h1>
-            <p className="text-white/80 text-base mb-6">
-              Wishing you a magical day full of surprises and joy 👀✨..
+        {step < steps.length ? (
+          <div className="space-y-6">
+            <div className="flex justify-center">
+               <div className="w-12 h-12 border-4 border-t-green-500 border-green-500/20 rounded-full animate-spin" />
+            </div>
+            <p className="text-lg sm:text-xl text-green-400 font-mono tracking-tight animate-pulse uppercase">
+              {steps[step]}
             </p>
-            <button
-              onClick={() => navigate('/gift')}
-              className="bg-gradient-to-r from-red-500 to-pink-600 text-white px-6 py-3 rounded-full cursor-pointer text-lg font-semibold shadow-md hover:scale-105 hover:shadow-red-500/40 transition-transform duration-300"
+            <div className="w-full bg-white/10 h-1 rounded-full overflow-hidden">
+               <div
+                className="bg-green-500 h-full transition-all duration-700 ease-out"
+                style={{ width: `${(step / steps.length) * 100}%` }}
+               />
+            </div>
+          </div>
+        ) : (
+          <div className="animate-in fade-in zoom-in duration-1000">
+            <h1
+              className="text-5xl bg-gradient-to-br from-white via-green-400 to-green-600 bg-clip-text text-transparent font-black sm:text-6xl mb-6 drop-shadow-2xl tracking-tighter"
             >
-              Redeem Gift
-            </button>
+              Happy {age}th Birthday, {name}!
+            </h1>
+            <p className="text-white/70 text-lg mb-8 leading-relaxed font-light">
+              We've reached a significant milestone in your timeline. May this cycle bring unprecedented joy and discovery.
+            </p>
+
+            <div className="flex flex-col gap-4">
+              <button
+                onClick={() => navigate('/gift')}
+                className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-4 rounded-2xl cursor-pointer text-xl font-bold shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:scale-105 hover:shadow-green-500/60 transition-all duration-300 active:scale-95"
+              >
+                Access Archives
+              </button>
+
+              <div className="mt-4 flex items-center justify-center gap-2 text-xs text-white/40 uppercase tracking-[0.2em]">
+                <span className="w-8 h-[1px] bg-white/20" />
+                Chronicle Verified
+                <span className="w-8 h-[1px] bg-white/20" />
+              </div>
+            </div>
           </div>
         )}
       </div>

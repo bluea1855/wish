@@ -1,28 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense, lazy } from "react";
 import { useLocation } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../pages/firebase"; // your firebase config
-import MatrixBackground from "../components/MatrixBackground";
-import GreetingCard from "../components/Greetingcard";
-import Effect from "../components/Effect";
+
+const MatrixTheme = lazy(() => import("../components/themes/MatrixTheme"));
+const CosmicVoyage = lazy(() => import("../components/themes/CosmicVoyage"));
+const EnchantedForest = lazy(() => import("../components/themes/EnchantedForest"));
+const TimeTraveler = lazy(() => import("../components/themes/TimeTraveler"));
 
 const Home = () => {
   const location = useLocation();
-  const [charset, setCharset] = useState("01");
-  const [personName, setPersonName] = useState("");
-  const [personAge, setPersonAge] = useState("");
+  const [charset, setCharset] = useState("");
+  const [personData, setPersonData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    const userDefinedCharset = params.get("charset") || "01";
-
-    // Update charset with delay (your original logic)
-    const timeoutId = setTimeout(() => {
+    const userDefinedCharset = params.get("charset");
+    if (userDefinedCharset) {
       setCharset(userDefinedCharset);
-    }, 8400);
-
-    return () => clearTimeout(timeoutId);
+    }
   }, [location.search]);
 
   useEffect(() => {
@@ -31,21 +28,15 @@ const Home = () => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const docRef = doc(db, "gifts", charset);
+        const docRef = doc(db, "gifts", charset.toLowerCase());
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          const data = docSnap.data();
-          setPersonName(data.personName || "");
-          setPersonAge(data.personAge || "");
+          setPersonData(docSnap.data());
         } else {
           console.log("No such document!");
-          setPersonName("");
-          setPersonAge("");
         }
       } catch (error) {
         console.error("Error fetching Firestore data:", error);
-        setPersonName("");
-        setPersonAge("");
       } finally {
         setLoading(false);
       }
@@ -54,12 +45,31 @@ const Home = () => {
     fetchData();
   }, [charset]);
 
+  if (loading) {
+    return (
+      <div className="h-screen w-full bg-black flex items-center justify-center text-green-500 font-mono">
+        Loading experience...
+      </div>
+    );
+  }
+
+  if (!personData) {
+    return (
+      <div className="h-screen w-full bg-black flex items-center justify-center text-red-500 font-mono">
+        Wish not found.
+      </div>
+    );
+  }
+
+  const theme = personData.theme || "matrix";
+
   return (
-    <div className="h-screen overflow-hidden">
-      <Effect />
-      <MatrixBackground charset={charset} />
-      {!loading && <GreetingCard name={personName} age={personAge} />}
-    </div>
+    <Suspense fallback={<div className="h-screen w-full bg-black flex items-center justify-center text-white">Initializing Theme...</div>}>
+      {theme === "matrix" && <MatrixTheme name={personData.personName} age={personData.personAge} charset={charset} imageUrls={personData.imageUrls} />}
+      {theme === "cosmic" && <CosmicVoyage name={personData.personName} age={personData.personAge} message={personData.message} imageUrls={personData.imageUrls} />}
+      {theme === "forest" && <EnchantedForest name={personData.personName} age={personData.personAge} message={personData.message} imageUrls={personData.imageUrls} />}
+      {theme === "traveler" && <TimeTraveler name={personData.personName} age={personData.personAge} message={personData.message} imageUrls={personData.imageUrls} />}
+    </Suspense>
   );
 };
 

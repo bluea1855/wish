@@ -1,6 +1,6 @@
 import React from "react";
 
-const photos = [
+const defaultPhotos = [
   "https://www.solitarytraveller.com/wp-content/uploads/2025/04/Best-Places-Visit-India-During-Rainy-Season-Mahabaleshwar-Maharashtra-1024x768.webp",
   "https://blog.thomascook.in/wp-content/uploads/2018/05/Lansdowne1-e1527130839237.jpg",
   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQDzyKiA_YT5SzOcfoEIQ1L-5eRajzK0SvBUg&s",
@@ -8,7 +8,8 @@ const photos = [
 
 ];
 
-export default function PhotoCollage() {
+export default function PhotoCollage({ imageUrls }) {
+  const displayPhotos = imageUrls && imageUrls.length > 0 ? imageUrls : defaultPhotos;
   return (
     <>
       <style>{`
@@ -63,7 +64,7 @@ export default function PhotoCollage() {
       `}</style>
 
       <div className="collage-container">
-        {photos.map((src, index) => {
+        {displayPhotos.map((src, index) => {
           // random rotation between -10 and 10 degrees
           const rotation = (Math.random() * 30 - 10).toFixed(2);
 

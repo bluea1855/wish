@@ -1,8 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import confetti from "canvas-confetti";
 
 const Effect = () => {
   useEffect(() => {
+    // Check for reduced motion preference
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      return;
+    }
+
     const timer = setTimeout(() => {
       // First effect: Original confetti bursts
       const count = 320;
@@ -25,13 +30,13 @@ const Effect = () => {
       });
       fire(0.35, {
         spread: 100,
-        decay: 3.2,
+        decay: 0.91,
         scalar: 0.8,
       });
       fire(0.1, {
         spread: 120,
         startVelocity: 25,
-        decay: 3.2,
+        decay: 0.92,
         scalar: 1.2,
       });
       fire(0.1, {
