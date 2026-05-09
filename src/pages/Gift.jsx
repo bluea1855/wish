@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import MatrixBackground from '../components/MatrixBackground';
-import { db } from './firebase';
+import { db, storage } from './firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import toast, { Toaster } from 'react-hot-toast';
 import { useLocation } from 'react-router-dom';
 
@@ -13,8 +14,11 @@ const Gift = () => {
     personName: '',
     personAge: '',
     message: 'Wishing you a magical day full of surprises and joy 👀✨..',
+    theme: 'matrix',
   });
 
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [link, setLink] = useState('');
 
@@ -35,14 +39,30 @@ const Gift = () => {
     }));
   };
 
+  const handleImageChange = (e) => {
+    if (e.target.files) {
+      setImages(Array.from(e.target.files));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUploading(true);
 
     const id = `${formData.personName}${formData.personAge}`.replace(/\s+/g, '').toLowerCase();
 
     try {
+      const imageUrls = [];
+      for (const image of images) {
+        const storageRef = ref(storage, `gifts/${id}/${image.name}`);
+        const snapshot = await uploadBytes(storageRef, image);
+        const url = await getDownloadURL(snapshot.ref);
+        imageUrls.push(url);
+      }
+
       await setDoc(doc(db, "gifts", id), {
         ...formData,
+        imageUrls,
         createdAt: new Date()
       });
 
@@ -69,8 +89,9 @@ const Gift = () => {
               <h2 className="text-2xl font-bold mb-6">Wish Form</h2>
               <form onSubmit={handleSubmit} className="space-y-4 text-left">
                 <div>
-                  <label className="block mb-1 text-sm font-medium">Person's Name</label>
+                  <label htmlFor="personName" className="block mb-1 text-sm font-medium">Person's Name</label>
                   <input
+                    id="personName"
                     type="text"
                     name="personName"
                     value={formData.personName}
@@ -81,8 +102,9 @@ const Gift = () => {
                 </div>
 
                 <div>
-                  <label className="block mb-1 text-sm font-medium">Person's Age</label>
+                  <label htmlFor="personAge" className="block mb-1 text-sm font-medium">Person's Age</label>
                   <input
+                    id="personAge"
                     type="number"
                     name="personAge"
                     value={formData.personAge}
@@ -93,8 +115,9 @@ const Gift = () => {
                 </div>
 
                 <div>
-                  <label className="block mb-1 text-sm font-medium">Message (optional)</label>
+                  <label htmlFor="message" className="block mb-1 text-sm font-medium">Message (optional)</label>
                   <textarea
+                    id="message"
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
@@ -103,11 +126,40 @@ const Gift = () => {
                   />
                 </div>
 
+                <div>
+                  <label htmlFor="theme" className="block mb-1 text-sm font-medium">Select Theme</label>
+                  <select
+                    id="theme"
+                    name="theme"
+                    value={formData.theme}
+                    onChange={handleChange}
+                    className="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/30 focus:outline-none [&>option]:text-black"
+                  >
+                    <option value="matrix">Matrix (Hacker)</option>
+                    <option value="cosmic">Cosmic Voyage</option>
+                    <option value="forest">Enchanted Forest</option>
+                    <option value="traveler">Time Traveler</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label htmlFor="images" className="block mb-1 text-sm font-medium">Upload Photos (Optional)</label>
+                  <input
+                    id="images"
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    className="w-full px-4 py-2 rounded bg-white/20 text-white border border-white/30 focus:outline-none file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-green-500 file:text-white hover:file:bg-green-600 cursor-pointer"
+                  />
+                </div>
+
                 <button
                   type="submit"
-                  className="w-full cursor-pointer py-2 px-4 bg-green-500 hover:bg-green-500 rounded text-white font-semibold transition"
+                  disabled={uploading}
+                  className="w-full cursor-pointer py-2 px-4 bg-green-500 hover:bg-green-600 disabled:bg-gray-500 rounded text-white font-semibold transition"
                 >
-                  Submit
+                  {uploading ? 'Generating...' : 'Submit'}
                 </button>
               </form>
             </>

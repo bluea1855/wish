@@ -1,6 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
-const MatrixBackground = ({charset}) => {
+const MatrixBackground = ({ charset }) => {
   const canvasRef = useRef(null);
 
   useEffect(() => {
@@ -21,6 +21,18 @@ const MatrixBackground = ({charset}) => {
     const random = (items) => items[Math.floor(Math.random() * items.length)];
 
     const draw = () => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+         // If reduced motion is preferred, just draw once and stop or draw static-ish
+         ctx.fillStyle = "black";
+         ctx.fillRect(0, 0, w, h);
+         ctx.fillStyle = color;
+         ctx.font = `${size}px monospace`;
+         for (let i = 0; i < p.length; i++) {
+           ctx.fillText(random(charset), i * size, (i * 30) % h);
+         }
+         return;
+      }
+
       ctx.fillStyle = "rgba(0,0,0,.05)";
       ctx.fillRect(0, 0, w, h);
       ctx.fillStyle = color;
@@ -44,20 +56,20 @@ const MatrixBackground = ({charset}) => {
   }, [charset]);
 
   return (
-    <>
-      <canvas
-        ref={canvasRef}
-        id="canvas"
-        style={{
-          position: "fixed",
-          top: 0,
-          left: 0,
-          zIndex: -1,
-          width: "100%",
-          height: "100%",
-        }}
-      />
-    </>
+    <canvas
+      ref={canvasRef}
+      id="canvas"
+      aria-hidden="true"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        zIndex: -1,
+        width: "100%",
+        height: "100%",
+        backgroundColor: "black"
+      }}
+    />
   );
 };
 

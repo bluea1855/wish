@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Firebase AI imports
 import { getAI, getGenerativeModel, GoogleAIBackend } from "firebase/ai";
@@ -24,9 +25,10 @@ const analytics = getAnalytics(app);
 // Initialize Firebase AI
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 
-// Create Generative Model instance for Gemini 2.5 Flash
-const model = getGenerativeModel(ai, { model: "gemini-2.5-flash" });
+// Create Generative Model instance for Gemini 1.5 Flash
+const model = getGenerativeModel(ai, { model: "gemini-1.5-flash" });
 
 const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { db, model };
+export { db, model, storage };
